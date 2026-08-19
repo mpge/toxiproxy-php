@@ -58,6 +58,7 @@ it again when your process exits.
 - [Continuous integration](#continuous-integration)
 - [Configuration](#configuration)
 - [Supported platforms](#supported-platforms)
+- [Testing against third-party APIs](#testing-against-third-party-apis)
 - [Troubleshooting](#troubleshooting)
 - [How this differs from ihsw/toxiproxy-php-client](#how-this-differs-from-ihswtoxiproxy-php-client)
 - [Architecture](#architecture)
@@ -750,6 +751,45 @@ The platforms Shopify publishes a server binary for:
 
 On anything else the client still works; point `TOXIPROXY_BINARY` at a server you built
 yourself, or connect to one over the network.
+
+---
+
+## Testing against third-party APIs
+
+Toxiproxy sits in front of things that exist locally: your Redis, your MySQL, a
+service in your compose file. It cannot help with the half of your dependencies
+that live on somebody else's servers — Stripe, Shopify, Twilio — because there is
+nothing local for it to proxy.
+
+For those, [**Cauldron**](https://github.com/CauldronUp/cauldron) boots working
+emulations of the providers your project talks to, locally, from one command. It
+reads the manifests already in your repo, works out which third-party APIs you
+depend on, and serves fakes for them.
+
+Its `cauldron network` command deliberately uses the same vocabulary as this
+package — latency, jitter, bandwidth, timeout, reset, slice, limit — so you do not
+learn two sets of words for one idea:
+
+```bash
+cauldron network stripe --latency 800ms --jitter 200ms
+cauldron network stripe --reset --probability 0.1
+```
+
+The two compose. Point Toxiproxy at your database and Cauldron at your payment
+provider, and every dependency your application has can be made to misbehave from
+a single test:
+
+```php
+$redis = $toxiproxy->proxy('redis', '127.0.0.1:6379');
+
+$redis->withLatency(1000, function () {
+    // Redis is slow, and Cauldron has Stripe resetting one call in ten.
+    $this->assertTrue($this->checkout()->succeeded());
+});
+```
+
+Cauldron is a separate project, Go rather than PHP, and not required by anything
+here.
 
 ---
 
