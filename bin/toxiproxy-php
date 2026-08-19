@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Mpge\Toxiproxy\Console\Application;
+
+// Works whether the package is the project being developed or a dependency
+// inside somebody else's vendor directory.
+$autoloaders = [
+    __DIR__.'/../vendor/autoload.php',
+    __DIR__.'/../../../autoload.php',
+    __DIR__.'/../../vendor/autoload.php',
+];
+
+$loaded = false;
+
+foreach ($autoloaders as $autoloader) {
+    if (is_file($autoloader)) {
+        require $autoloader;
+        $loaded = true;
+
+        break;
+    }
+}
+
+if (! $loaded) {
+    fwrite(STDERR, "toxiproxy-php could not find a Composer autoloader. Run `composer install`.\n");
+
+    exit(1);
+}
+
+exit((new Application())->run());
