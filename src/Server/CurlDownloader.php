@@ -6,6 +6,7 @@ namespace Mpge\Toxiproxy\Server;
 
 use CurlHandle;
 use Mpge\Toxiproxy\Exception\BinaryException;
+use Mpge\Toxiproxy\Exception\InvalidArgumentException;
 
 /**
  * The real downloader: curl where available, stream wrappers otherwise.
@@ -20,6 +21,10 @@ final class CurlDownloader implements Downloader
         private readonly float $connectTimeout = 10.0,
         private readonly string $userAgent = 'toxiproxy-php',
     ) {
+        if ($userAgent === '') {
+            // GitHub's API rejects requests with no User-Agent outright.
+            throw new InvalidArgumentException('The download User-Agent cannot be empty.');
+        }
     }
 
     public function get(string $url): string
@@ -154,6 +159,16 @@ final class CurlDownloader implements Downloader
 
     private function handle(string $url): CurlHandle
     {
+        if ($url === '') {
+            throw new InvalidArgumentException('Cannot download from an empty URL.');
+        }
+
+        $userAgent = $this->userAgent;
+
+        if ($userAgent === '') {
+            throw new InvalidArgumentException('The download User-Agent cannot be empty.');
+        }
+
         $handle = curl_init();
 
         if (! $handle instanceof CurlHandle) {
@@ -166,7 +181,7 @@ final class CurlDownloader implements Downloader
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => (int) ceil($this->timeout),
             CURLOPT_CONNECTTIMEOUT => (int) ceil($this->connectTimeout),
-            CURLOPT_USERAGENT => $this->userAgent,
+            CURLOPT_USERAGENT => $userAgent,
             CURLOPT_HTTPHEADER => ['Accept: */*'],
             CURLOPT_FAILONERROR => false,
         ]);

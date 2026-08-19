@@ -27,15 +27,15 @@ final class StartCommand extends ToxiproxyCommand
         $this
             ->addOption('foreground', null, InputOption::VALUE_NONE, 'Stay attached and stream the server log until interrupted')
             ->setHelp(<<<'HELP'
-            Starts the Toxiproxy server and returns, leaving it running in the
-            background. Stop it later with <info>toxiproxy-php stop</info>.
+                Starts the Toxiproxy server and returns, leaving it running in the
+                background. Stop it later with <info>toxiproxy-php stop</info>.
 
-            If something is already answering on the API port, this reports that and exits
-            successfully without starting a second one.
+                If something is already answering on the API port, this reports that and exits
+                successfully without starting a second one.
 
-            With <comment>--foreground</comment> the server stays attached to this terminal and its log is
-            streamed; Ctrl-C then stops it.
-            HELP);
+                With <comment>--foreground</comment> the server stays attached to this terminal and its log is
+                streamed; Ctrl-C then stops it.
+                HELP);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Mpge\Toxiproxy;
 
+use Mpge\Toxiproxy\Client\ToxiproxyClient;
 use Mpge\Toxiproxy\Client\Transport;
 use Mpge\Toxiproxy\Client\Transports;
-use Mpge\Toxiproxy\Client\ToxiproxyClient;
 use Mpge\Toxiproxy\Server\DockerServer;
 use Mpge\Toxiproxy\Server\Server;
 use Mpge\Toxiproxy\Server\ToxiproxyServer;

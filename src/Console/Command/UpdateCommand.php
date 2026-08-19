@@ -24,14 +24,14 @@ final class UpdateCommand extends ToxiproxyCommand
         $this->addConnectionOptions();
 
         $this->setHelp(<<<'HELP'
-        Looks up the latest Toxiproxy release on GitHub and installs it alongside
-        whatever is already cached.
+            Looks up the latest Toxiproxy release on GitHub and installs it alongside
+            whatever is already cached.
 
-        Nothing is deleted and nothing switches over on its own: the version this
-        package uses stays pinned until you set TOXIPROXY_VERSION or pass --release.
-        A test suite whose proxy server changes underneath it on somebody else's
-        release schedule is a flake waiting to happen.
-        HELP);
+            Nothing is deleted and nothing switches over on its own: the version this
+            package uses stays pinned until you set TOXIPROXY_VERSION or pass --release.
+            A test suite whose proxy server changes underneath it on somebody else's
+            release schedule is a flake waiting to happen.
+            HELP);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

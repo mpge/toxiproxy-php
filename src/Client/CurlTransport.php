@@ -6,6 +6,7 @@ namespace Mpge\Toxiproxy\Client;
 
 use CurlHandle;
 use Mpge\Toxiproxy\Exception\ConnectionException;
+use Mpge\Toxiproxy\Exception\InvalidArgumentException;
 
 /**
  * The default transport: a thin, dependency-free wrapper around ext-curl.
@@ -29,6 +30,10 @@ final class CurlTransport implements Transport
 
     public function send(string $method, string $url, ?string $body = null, array $headers = []): Response
     {
+        if ($url === '' || $method === '') {
+            throw new InvalidArgumentException('A request needs both a method and a URL.');
+        }
+
         $handle = curl_init();
 
         if (! $handle instanceof CurlHandle) {

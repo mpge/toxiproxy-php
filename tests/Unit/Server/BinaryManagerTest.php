@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mpge\Toxiproxy\Tests\Unit\Server;
 
+use FilesystemIterator;
 use Mpge\Toxiproxy\Configuration;
 use Mpge\Toxiproxy\Exception\BinaryException;
 use Mpge\Toxiproxy\Server\BinaryManager;
@@ -12,6 +13,9 @@ use Mpge\Toxiproxy\Server\Release;
 use Mpge\Toxiproxy\Tests\Support\FakeDownloader;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\TestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
 use Symfony\Component\Process\ExecutableFinder;
 
 final class BinaryManagerTest extends TestCase
@@ -32,13 +36,13 @@ final class BinaryManagerTest extends TestCase
             return;
         }
 
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->home, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST,
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->home, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST,
         );
 
         foreach ($files as $file) {
-            /** @var \SplFileInfo $file */
+            /** @var SplFileInfo $file */
             $file->isDir() ? @rmdir($file->getPathname()) : @unlink($file->getPathname());
         }
 
@@ -49,9 +53,9 @@ final class BinaryManagerTest extends TestCase
     {
         $path = $this->manager()->cachedPath();
 
-        self::assertStringStartsWith($this->home, $path);
+        self::assertTrue(str_starts_with($path, $this->home), $path.' should live under '.$this->home);
         self::assertStringContainsString('2.12.0', $path);
-        self::assertStringEndsWith(Platform::current()->binaryName(), $path);
+        self::assertTrue(str_ends_with($path, Platform::current()->binaryName()), $path);
         self::assertStringNotContainsString('vendor', $path);
     }
 
@@ -199,12 +203,14 @@ final class BinaryManagerTest extends TestCase
             $this->config(),
             new Platform('linux', 'amd64'),
             $downloader,
-            new class($systemBinary) extends ExecutableFinder
-            {
+            new class ($systemBinary) extends ExecutableFinder {
                 public function __construct(private readonly string $path)
                 {
                 }
 
+                /**
+                 * @param  array<int, string>  $extraDirs
+                 */
                 public function find(string $name, ?string $default = null, array $extraDirs = []): ?string
                 {
                     return $name === 'toxiproxy-server' ? $this->path : $default;
@@ -248,8 +254,10 @@ final class BinaryManagerTest extends TestCase
 
     private function finderThatFindsNothing(): ExecutableFinder
     {
-        return new class extends ExecutableFinder
-        {
+        return new class () extends ExecutableFinder {
+            /**
+             * @param  array<int, string>  $extraDirs
+             */
             public function find(string $name, ?string $default = null, array $extraDirs = []): ?string
             {
                 return $default;

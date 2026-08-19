@@ -30,8 +30,10 @@ final class ToxiproxyServiceProvider extends ServiceProvider
         $this->app->singleton(Configuration::class, function ($app): Configuration {
             /** @var ConfigRepository $config */
             $config = $app->make('config');
+            /** @var mixed $published */
+            $published = $config->get('toxiproxy', []);
 
-            return self::configurationFrom($config->get('toxiproxy', []));
+            return self::configurationFrom(is_array($published) ? $published : []);
         });
 
         $this->app->singleton(ToxiproxyServer::class, fn ($app): ToxiproxyServer => ToxiproxyServer::create(
@@ -96,7 +98,7 @@ final class ToxiproxyServiceProvider extends ServiceProvider
     /**
      * Translate the published config array into the package's Configuration.
      *
-     * @param  array<string, mixed>  $config
+     * @param  array<array-key, mixed>  $config
      */
     public static function configurationFrom(array $config): Configuration
     {

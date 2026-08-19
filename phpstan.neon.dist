@@ -1,0 +1,19 @@
+parameters:
+    level: 9
+    paths:
+        - src
+        - tests
+        - bin/toxiproxy-php
+    treatPhpDocTypesAsCertain: false
+    checkMissingCallableSignature: true
+
+    ignoreErrors:
+        # $http_response_header is a magic local PHP creates inside a function
+        # that has just called a stream wrapper. There is no way to declare it.
+        -
+            message: '#Variable \$http_response_header .*#'
+            path: src/Client/StreamTransport.php
+
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon

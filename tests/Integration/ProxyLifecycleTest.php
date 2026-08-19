@@ -7,6 +7,7 @@ namespace Mpge\Toxiproxy\Tests\Integration;
 use Mpge\Toxiproxy\Exception\ApiException;
 use Mpge\Toxiproxy\Exception\ProxyNotFoundException;
 use Mpge\Toxiproxy\Proxy\ProxyDefinition;
+use RuntimeException;
 
 /**
  * Proxy CRUD against a real server.
@@ -156,15 +157,20 @@ final class ProxyLifecycleTest extends IntegrationTestCase
 
         $proxy = $this->toxiproxy()->proxy('down-throws', $upstream);
 
+        /** @var list<string> $steps */
+        $steps = [];
+
         try {
-            $proxy->down(static function (): void {
-                throw new \RuntimeException('assertion failed inside the block');
+            $proxy->down(static function () use (&$steps): void {
+                $steps[] = 'inside';
+
+                throw new RuntimeException('assertion failed inside the block');
             });
-            self::fail('The exception should have propagated.');
-        } catch (\RuntimeException) {
-            // expected
+        } catch (RuntimeException) {
+            $steps[] = 'propagated';
         }
 
+        self::assertSame(['inside', 'propagated'], $steps);
         self::assertTrue($proxy->refresh()->isEnabled());
         self::assertTrue($this->canConnect($proxy->listen()));
     }

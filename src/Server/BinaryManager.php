@@ -261,7 +261,7 @@ final class BinaryManager
         return ! is_file($this->cachedPath()) && $this->onPath() !== null;
     }
 
-    private function expectedChecksum(Release $release, string $asset, Downloader $downloader): ?string
+    private function expectedChecksum(Release $release, string $asset, Downloader $downloader): string
     {
         try {
             $checksums = Checksums::parse($downloader->get($release->checksumsUrl()));

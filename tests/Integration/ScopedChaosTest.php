@@ -48,15 +48,20 @@ final class ScopedChaosTest extends IntegrationTestCase
         [, $upstream] = $this->echoServer();
         $proxy = $this->toxiproxy()->proxy('scoped-throws', $upstream);
 
+        /** @var list<string> $steps */
+        $steps = [];
+
         try {
-            $proxy->withLatency(1000, static function (): void {
+            $proxy->withLatency(1000, static function () use (&$steps): void {
+                $steps[] = 'inside';
+
                 throw new RuntimeException('assertion failed');
             });
-            self::fail('The exception should have propagated.');
         } catch (RuntimeException $e) {
-            self::assertSame('assertion failed', $e->getMessage());
+            $steps[] = $e->getMessage();
         }
 
+        self::assertSame(['inside', 'assertion failed'], $steps);
         self::assertTrue($proxy->refresh()->toxics()->isEmpty());
     }
 
@@ -132,7 +137,10 @@ final class ScopedChaosTest extends IntegrationTestCase
         [, $upstream] = $this->echoServer();
         $proxy = $this->toxiproxy()->proxy('scoped-bandwidth', $upstream);
 
-        $rate = $proxy->withBandwidth(64, static fn (): ?int => $proxy->refresh()->toxic('bandwidth_downstream')?->attribute('rate'));
+        $rate = $proxy->withBandwidth(
+            64,
+            static fn (): int|float|null => $proxy->refresh()->toxic('bandwidth_downstream')?->attribute('rate'),
+        );
 
         self::assertSame(64, $rate);
         self::assertTrue($proxy->refresh()->toxics()->isEmpty());

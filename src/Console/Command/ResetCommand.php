@@ -25,11 +25,11 @@ final class ResetCommand extends ToxiproxyCommand
         $this
             ->addOption('flush', null, InputOption::VALUE_NONE, 'Delete the proxies too, not just their toxics')
             ->setHelp(<<<'HELP'
-            Puts the server back to a clean state: every proxy enabled, every toxic gone.
-            The proxies themselves survive, which is what you want between test cases.
+                Puts the server back to a clean state: every proxy enabled, every toxic gone.
+                The proxies themselves survive, which is what you want between test cases.
 
-            Use <comment>--flush</comment> to delete the proxies as well.
-            HELP);
+                Use <comment>--flush</comment> to delete the proxies as well.
+                HELP);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

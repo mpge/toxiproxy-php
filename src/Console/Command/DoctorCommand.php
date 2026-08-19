@@ -38,12 +38,12 @@ final class DoctorCommand extends ToxiproxyCommand
         $this->addConnectionOptions();
 
         $this->setHelp(<<<'HELP'
-        Checks everything that has to be true for this package to work, and says what
-        to do about anything that is not.
+            Checks everything that has to be true for this package to work, and says what
+            to do about anything that is not.
 
-        Exits non-zero only for problems that would actually stop you working; a
-        server that simply is not running yet is reported, not failed.
-        HELP);
+            Exits non-zero only for problems that would actually stop you working; a
+            server that simply is not running yet is reported, not failed.
+            HELP);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

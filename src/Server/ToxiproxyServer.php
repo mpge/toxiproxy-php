@@ -103,7 +103,7 @@ final class ToxiproxyServer implements Server
 
     public function pid(): ?int
     {
-        return $this->record?->pid ?? $this->process?->getPid();
+        return $this->record !== null ? $this->record->pid : $this->process?->getPid();
     }
 
     /**

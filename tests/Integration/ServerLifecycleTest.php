@@ -12,6 +12,7 @@ use Mpge\Toxiproxy\Server\ToxiproxyServer;
 use Mpge\Toxiproxy\Toxiproxy;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * Starting and stopping real server processes.
@@ -30,7 +31,7 @@ final class ServerLifecycleTest extends TestCase
         foreach ($this->started as $server) {
             try {
                 $server->stop(2.0);
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 // Best effort: the point of the cleanup is to leave no orphans.
             }
         }

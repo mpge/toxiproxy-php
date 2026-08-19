@@ -129,14 +129,20 @@ final class ProxyTest extends TestCase
 
         $proxy = $this->proxy();
 
+        /** @var list<string> $steps */
+        $steps = [];
+
         try {
-            $proxy->withLatency(1000, static function (): void {
+            $proxy->withLatency(1000, static function () use (&$steps): void {
+                $steps[] = 'inside';
+
                 throw new RuntimeException('the test failed');
             });
-            self::fail('The exception should have propagated.');
         } catch (RuntimeException $e) {
-            self::assertSame('the test failed', $e->getMessage());
+            $steps[] = $e->getMessage();
         }
+
+        self::assertSame(['inside', 'the test failed'], $steps);
 
         // This is the whole point of the finally block: a failing assertion
         // inside the callback must not leave the network broken for the next test.
@@ -192,14 +198,20 @@ final class ProxyTest extends TestCase
 
         $proxy = $this->proxy();
 
+        /** @var list<string> $steps */
+        $steps = [];
+
         try {
-            $proxy->down(static function (): void {
+            $proxy->down(static function () use (&$steps): void {
+                $steps[] = 'inside';
+
                 throw new RuntimeException('boom');
             });
-            self::fail('The exception should have propagated.');
         } catch (RuntimeException) {
-            // expected
+            $steps[] = 'propagated';
         }
+
+        self::assertSame(['inside', 'propagated'], $steps);
 
         self::assertSame(2, $this->transport->countRequests('PATCH', '/proxies/redis'));
     }

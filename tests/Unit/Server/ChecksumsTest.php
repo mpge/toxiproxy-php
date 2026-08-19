@@ -13,10 +13,10 @@ final class ChecksumsTest extends TestCase
      * Trimmed from the real v2.12.0 checksums.txt, including its exact spacing.
      */
     private const SAMPLE = <<<'TXT'
-    00f328635c647b7caa8292852245c7c70dd480d3114b25a2b43145a11651abfb  toxiproxy_2.12.0_solaris_amd64.tar.gz
-    556d891134a3c582dc1e1a3f7335fd55142e5965769855a00b944e13e48302fc  toxiproxy-server-linux-amd64
-    53e770c1c3035b5a9f1bc629fce537db1f95f62b26f4ebe6e756afd701cf077c  toxiproxy-server-linux-arm64
-    TXT;
+        00f328635c647b7caa8292852245c7c70dd480d3114b25a2b43145a11651abfb  toxiproxy_2.12.0_solaris_amd64.tar.gz
+        556d891134a3c582dc1e1a3f7335fd55142e5965769855a00b944e13e48302fc  toxiproxy-server-linux-amd64
+        53e770c1c3035b5a9f1bc629fce537db1f95f62b26f4ebe6e756afd701cf077c  toxiproxy-server-linux-arm64
+        TXT;
 
     public function test_it_parses_the_upstream_checksums_format(): void
     {
@@ -73,11 +73,11 @@ final class ChecksumsTest extends TestCase
     public function test_it_skips_blank_lines_comments_and_malformed_rows(): void
     {
         $checksums = Checksums::parse(<<<'TXT'
-        # a comment
+            # a comment
 
-        not-a-hash  some-file
-        556d891134a3c582dc1e1a3f7335fd55142e5965769855a00b944e13e48302fc  toxiproxy-server-linux-amd64
-        TXT);
+            not-a-hash  some-file
+            556d891134a3c582dc1e1a3f7335fd55142e5965769855a00b944e13e48302fc  toxiproxy-server-linux-amd64
+            TXT);
 
         self::assertSame(['toxiproxy-server-linux-amd64'], array_keys($checksums->all()));
     }

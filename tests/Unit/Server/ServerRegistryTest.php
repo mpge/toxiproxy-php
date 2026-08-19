@@ -134,8 +134,7 @@ final class ServerRegistryTest extends TestCase
         $registry->record($this->record(port: 8474, pid: 1));
         $registry->record($this->record(port: 9474, pid: 2));
 
-        $removed = $registry->prune(new class extends ProcessControl
-        {
+        $removed = $registry->prune(new class () extends ProcessControl {
             public function isAlive(int $pid): bool
             {
                 return $pid === 2;

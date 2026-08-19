@@ -27,13 +27,13 @@ final class InstallCommand extends ToxiproxyCommand
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Re-download even if the binary is already cached')
             ->addOption('no-verify', null, InputOption::VALUE_NONE, 'Skip sha256 verification against the release checksums')
             ->setHelp(<<<'HELP'
-            Downloads the toxiproxy-server binary Shopify publishes for this OS and
-            architecture, verifies its sha256 against the release checksums file, and
-            caches it outside vendor/ so every project on this machine shares one copy.
+                Downloads the toxiproxy-server binary Shopify publishes for this OS and
+                architecture, verifies its sha256 against the release checksums file, and
+                caches it outside vendor/ so every project on this machine shares one copy.
 
-            Nothing is compiled and nothing is reimplemented: this is the same binary you
-            would get from the GitHub release page.
-            HELP);
+                Nothing is compiled and nothing is reimplemented: this is the same binary you
+                would get from the GitHub release page.
+                HELP);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

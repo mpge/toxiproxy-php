@@ -23,12 +23,12 @@ final class StopCommand extends ToxiproxyCommand
         $this->addConnectionOptions();
 
         $this->setHelp(<<<'HELP'
-        Stops the Toxiproxy server recorded for this endpoint.
+            Stops the Toxiproxy server recorded for this endpoint.
 
-        A server this package did not start has no record, and this command refuses to
-        touch it. That is deliberate: your docker-compose Toxiproxy, or one a colleague
-        left running, is not ours to kill.
-        HELP);
+            A server this package did not start has no record, and this command refuses to
+            touch it. That is deliberate: your docker-compose Toxiproxy, or one a colleague
+            left running, is not ours to kill.
+            HELP);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

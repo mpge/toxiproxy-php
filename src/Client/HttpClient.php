@@ -38,7 +38,7 @@ final class HttpClient
         // a guard against people poking the control plane from a browser.
         if (str_starts_with($userAgent, 'Mozilla/')) {
             throw new InvalidArgumentException(
-                'Toxiproxy rejects User-Agent values starting with "Mozilla/" (HTTP 403). Choose another.'
+                'Toxiproxy rejects User-Agent values starting with "Mozilla/" (HTTP 403). Choose another.',
             );
         }
 

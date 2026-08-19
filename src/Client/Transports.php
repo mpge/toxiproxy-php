@@ -23,7 +23,7 @@ final class Transports
 
         throw new ConnectionException(
             'No usable HTTP transport. Install ext-curl, enable allow_url_fopen, '
-            .'or pass your own Transport (see Psr18Transport).'
+            .'or pass your own Transport (see Psr18Transport).',
         );
     }
 }

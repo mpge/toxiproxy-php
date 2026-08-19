@@ -23,15 +23,15 @@ final class VersionCommand extends ToxiproxyCommand
         $this->addConnectionOptions();
 
         $this->setHelp(<<<'HELP'
-        Three versions matter and they can disagree:
+            Three versions matter and they can disagree:
 
-          package  this Composer package
-          binary   the toxiproxy-server on disk
-          server   whatever is answering on the API port right now
+              package  this Composer package
+              binary   the toxiproxy-server on disk
+              server   whatever is answering on the API port right now
 
-        A mismatch between binary and server usually means you are talking to a
-        Toxiproxy somebody else started.
-        HELP);
+            A mismatch between binary and server usually means you are talking to a
+            Toxiproxy somebody else started.
+            HELP);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

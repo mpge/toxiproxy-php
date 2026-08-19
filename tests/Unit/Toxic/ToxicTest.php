@@ -83,6 +83,8 @@ final class ToxicTest extends TestCase
     /**
      * These names are copied from the json tags on upstream's toxic structs. If
      * this test ever fails, upstream changed and the package must follow.
+     *
+     * @param  list<string>  $expected
      */
     #[DataProvider('attributeNames')]
     public function test_attribute_names_mirror_the_upstream_go_structs(ToxicType $type, array $expected): void

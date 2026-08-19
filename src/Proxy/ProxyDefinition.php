@@ -40,7 +40,7 @@ final readonly class ProxyDefinition implements JsonSerializable
     }
 
     /**
-     * @param  array<string, mixed>  $payload
+     * @param  array<array-key, mixed>  $payload
      */
     public static function fromArray(array $payload): self
     {

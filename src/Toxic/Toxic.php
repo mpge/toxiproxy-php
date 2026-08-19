@@ -6,14 +6,13 @@ namespace Mpge\Toxiproxy\Toxic;
 
 use JsonSerializable;
 use Mpge\Toxiproxy\Exception\InvalidArgumentException;
+use stdClass;
 
 /**
  * An immutable snapshot of a toxic as Toxiproxy reports it.
  *
  * Mutating helpers return a new instance; nothing here talks to the server.
  * Sending a changed toxic back is the client's job.
- *
- * @implements JsonSerializable
  */
 final readonly class Toxic implements JsonSerializable
 {
@@ -61,7 +60,11 @@ final readonly class Toxic implements JsonSerializable
     /**
      * Build from a decoded Toxiproxy API payload.
      *
-     * @param  array<string, mixed>  $payload
+     * Accepts any decoded JSON array rather than insisting on string keys,
+     * because json_decode() cannot promise those; every field read below is
+     * validated regardless.
+     *
+     * @param  array<array-key, mixed>  $payload
      */
     public static function fromArray(array $payload): self
     {
@@ -139,7 +142,7 @@ final readonly class Toxic implements JsonSerializable
         ksort($mine);
         ksort($theirs);
 
-        return $mine == $theirs;
+        return $mine === $theirs;
     }
 
     public function withToxicity(float $toxicity): self
@@ -172,7 +175,7 @@ final readonly class Toxic implements JsonSerializable
             'type' => $this->type->value,
             'stream' => $this->stream->value,
             'toxicity' => $this->toxicity,
-            'attributes' => $this->attributes === [] ? new \stdClass() : $this->attributes,
+            'attributes' => $this->attributes === [] ? new stdClass() : $this->attributes,
         ];
     }
 

@@ -40,7 +40,7 @@ final class Proxy implements JsonSerializable
     }
 
     /**
-     * @param  array<mixed>  $payload  a proxy object as returned by the API
+     * @param  array<array-key, mixed>  $payload  a proxy object as returned by the API
      */
     public static function fromArray(ToxiproxyClient $client, array $payload): self
     {
