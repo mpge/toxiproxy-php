@@ -1,0 +1,87 @@
+{
+    "name": "mpge/toxiproxy-php",
+    "description": "Toxiproxy for PHP, batteries included: a modern client for Shopify's Toxiproxy plus automatic management of the official Go server binary.",
+    "type": "library",
+    "keywords": [
+        "toxiproxy",
+        "chaos-engineering",
+        "fault-injection",
+        "resilience",
+        "testing",
+        "network",
+        "latency",
+        "proxy"
+    ],
+    "homepage": "https://github.com/mpge/toxiproxy-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Gallant",
+            "email": "matthew@matthewpg.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/mpge/toxiproxy-php/issues",
+        "source": "https://github.com/mpge/toxiproxy-php"
+    },
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "symfony/console": "^6.4 || ^7.0 || ^8.0",
+        "symfony/process": "^6.4 || ^7.0 || ^8.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0"
+    },
+    "suggest": {
+        "ext-curl": "Preferred HTTP transport. Without it the package falls back to PHP stream wrappers.",
+        "psr/http-client": "Bring your own PSR-18 client via Psr18Transport instead of the built-in transports.",
+        "laravel/framework": "Enables the optional Laravel service provider and artisan commands."
+    },
+    "bin": [
+        "bin/toxiproxy-php"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mpge\Toxiproxy\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mpge\Toxiproxy\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mpge\Toxiproxy\Laravel\ToxiproxyServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite=unit",
+        "test:integration": "phpunit --testsuite=integration",
+        "stan": "phpstan analyse",
+        "lint": "php-cs-fixer fix --dry-run --diff",
+        "fix": "php-cs-fixer fix",
+        "ci": [
+            "@composer validate --strict",
+            "@lint",
+            "@stan",
+            "@test:unit"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {}
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
