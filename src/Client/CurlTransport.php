@@ -35,36 +35,34 @@ final class CurlTransport implements Transport
             throw ConnectionException::forEndpoint($url, 'curl_init() failed');
         }
 
-        try {
-            curl_setopt_array($handle, [
-                CURLOPT_URL => $url,
-                CURLOPT_CUSTOMREQUEST => $method,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => false,
-                CURLOPT_FOLLOWLOCATION => false,
-                CURLOPT_TIMEOUT_MS => (int) round($this->timeout * 1000),
-                CURLOPT_CONNECTTIMEOUT_MS => (int) round($this->connectTimeout * 1000),
-                CURLOPT_HTTPHEADER => $this->formatHeaders($headers),
-            ]);
+        curl_setopt_array($handle, [
+            CURLOPT_URL => $url,
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_TIMEOUT_MS => (int) round($this->timeout * 1000),
+            CURLOPT_CONNECTTIMEOUT_MS => (int) round($this->connectTimeout * 1000),
+            CURLOPT_HTTPHEADER => $this->formatHeaders($headers),
+        ]);
 
-            if ($body !== null) {
-                curl_setopt($handle, CURLOPT_POSTFIELDS, $body);
-            }
-
-            $result = curl_exec($handle);
-            $errno = curl_errno($handle);
-
-            if ($errno !== 0 || $result === false) {
-                throw ConnectionException::forEndpoint($url, curl_error($handle) ?: 'curl error '.$errno);
-            }
-
-            /** @var int $status */
-            $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
-
-            return new Response($status, is_string($result) ? $result : '');
-        } finally {
-            curl_close($handle);
+        if ($body !== null) {
+            curl_setopt($handle, CURLOPT_POSTFIELDS, $body);
         }
+
+        $result = curl_exec($handle);
+        $errno = curl_errno($handle);
+
+        if ($errno !== 0 || $result === false) {
+            throw ConnectionException::forEndpoint($url, curl_error($handle) ?: 'curl error '.$errno);
+        }
+
+        /** @var int $status */
+        $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
+
+        // No curl_close(): it is a deprecated no-op since PHP 8.0, and the
+        // handle is released when this CurlHandle goes out of scope.
+        return new Response($status, is_string($result) ? $result : '');
     }
 
     /**

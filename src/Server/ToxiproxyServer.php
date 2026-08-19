@@ -26,7 +26,7 @@ use Symfony\Component\Process\Process;
  * else's docker-compose Toxiproxy, or one a colleague left running, survives
  * your test suite untouched.
  */
-final class ToxiproxyServer
+final class ToxiproxyServer implements Server
 {
     private ?Process $process = null;
 
@@ -111,7 +111,7 @@ final class ToxiproxyServer
      *
      * @param  bool  $detached  leave the server running after this PHP process exits
      */
-    public function start(bool $detached = false): self
+    public function start(bool $detached = false): static
     {
         if ($this->isRunning()) {
             // Somebody else's server. Use it, but never assume the right to
@@ -194,7 +194,7 @@ final class ToxiproxyServer
         return $this->processes->stopRecorded($record, $graceSeconds);
     }
 
-    public function restart(bool $detached = false): self
+    public function restart(bool $detached = false): static
     {
         $this->stop();
 

@@ -46,18 +46,18 @@
     ],
     "autoload": {
         "psr-4": {
-            "Mpge\Toxiproxy\\": "src/"
+            "Mpge\\Toxiproxy\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Mpge\Toxiproxy\Tests\\": "tests/"
+            "Mpge\\Toxiproxy\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Mpge\Toxiproxy\Laravel\ToxiproxyServiceProvider"
+                "Mpge\\Toxiproxy\\Laravel\\ToxiproxyServiceProvider"
             ]
         },
         "branch-alias": {

@@ -30,18 +30,14 @@ final class CurlDownloader implements Downloader
 
         $handle = $this->handle($url);
 
-        try {
-            curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 
-            $body = curl_exec($handle);
+        $body = curl_exec($handle);
 
-            $this->assertNoCurlError($handle, $url);
-            $this->assertHttpOk((int) curl_getinfo($handle, CURLINFO_RESPONSE_CODE), $url);
+        $this->assertNoCurlError($handle, $url);
+        $this->assertHttpOk((int) curl_getinfo($handle, CURLINFO_RESPONSE_CODE), $url);
 
-            return is_string($body) ? $body : '';
-        } finally {
-            curl_close($handle);
-        }
+        return is_string($body) ? $body : '';
     }
 
     public function download(string $url, string $destination, ?callable $onProgress = null): void
@@ -110,7 +106,8 @@ final class CurlDownloader implements Downloader
             $this->assertNoCurlError($handle, $url);
             $this->assertHttpOk((int) curl_getinfo($handle, CURLINFO_RESPONSE_CODE), $url);
         } finally {
-            curl_close($handle);
+            // The file handle must be closed before the caller renames the
+            // download into place; the curl handle frees itself.
             fclose($stream);
         }
     }
