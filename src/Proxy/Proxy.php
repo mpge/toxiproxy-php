@@ -327,7 +327,7 @@ final class Proxy implements JsonSerializable
                 continue;
             }
 
-            if ($current->toArray() !== $wanted->toArray()) {
+            if (! $current->equals($wanted)) {
                 $this->client->updateToxic($this->name, $wanted);
             }
         }

@@ -52,7 +52,9 @@ final readonly class Toxic implements JsonSerializable
             $type,
             $stream,
             $toxicity,
-            $attributes + $type->defaultAttributes(),
+            // array_replace rather than + so the keys stay in the order the
+            // upstream Go struct declares them, whatever order they arrived in.
+            array_replace($type->defaultAttributes(), $attributes),
         );
     }
 
@@ -107,7 +109,37 @@ final readonly class Toxic implements JsonSerializable
     {
         $this->type->assertAttributesAreKnown($attributes);
 
-        return new self($this->name, $this->type, $this->stream, $this->toxicity, $attributes + $this->attributes);
+        return new self(
+            $this->name,
+            $this->type,
+            $this->stream,
+            $this->toxicity,
+            array_replace($this->attributes, $attributes),
+        );
+    }
+
+    /**
+     * Two toxics are the same when the server would store them identically.
+     *
+     * Attribute order is not part of that, so it is normalised away rather than
+     * being allowed to trigger a pointless update request.
+     */
+    public function equals(self $other): bool
+    {
+        if ($this->name !== $other->name || $this->type !== $other->type || $this->stream !== $other->stream) {
+            return false;
+        }
+
+        if (abs($this->toxicity - $other->toxicity) > PHP_FLOAT_EPSILON) {
+            return false;
+        }
+
+        $mine = $this->attributes;
+        $theirs = $other->attributes;
+        ksort($mine);
+        ksort($theirs);
+
+        return $mine == $theirs;
     }
 
     public function withToxicity(float $toxicity): self

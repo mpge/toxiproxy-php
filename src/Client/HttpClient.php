@@ -124,7 +124,13 @@ final class HttpClient
     private function encode(array|object $body): string
     {
         try {
-            return json_encode($body, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
+            // PRESERVE_ZERO_FRACTION keeps a toxicity of 1.0 from being written
+            // as the integer 1. Go decodes either into float32, but sending the
+            // right JSON type costs nothing and reads correctly in a request log.
+            return json_encode(
+                $body,
+                JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION,
+            );
         } catch (JsonException $e) {
             throw new InvalidArgumentException('Could not encode the request body as JSON: '.$e->getMessage(), 0, $e);
         }
