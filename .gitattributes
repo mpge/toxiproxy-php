@@ -1,0 +1,19 @@
+* text=auto eol=lf
+
+*.php   text eol=lf diff=php
+*.json  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.neon  text eol=lf
+*.dist  text eol=lf
+bin/toxiproxy-php text eol=lf
+
+# Keep the Composer dist tarball lean for consumers.
+/.github            export-ignore
+/tests              export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore
+/.php-cs-fixer.php  export-ignore
+/phpunit.xml.dist   export-ignore
+/phpstan.neon.dist  export-ignore
+/CONTRIBUTING.md    export-ignore
