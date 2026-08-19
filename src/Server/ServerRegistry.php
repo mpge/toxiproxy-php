@@ -109,9 +109,15 @@ final readonly class ServerRegistry
 
     private function path(string $host, int $port): string
     {
-        $key = preg_replace('/[^A-Za-z0-9._-]/', '_', $host.'_'.$port) ?? 'server';
+        $key = preg_replace('/[^A-Za-z0-9._-]/', '_', $host.'_'.$port) ?? '';
 
-        return $this->directory.DIRECTORY_SEPARATOR.$key.'.json';
+        // Dots are kept because they make "127.0.0.1_8474" readable, but a run
+        // of them is collapsed and a leading one stripped: a dotfile is
+        // invisible to glob(), which would hide the record from all() and
+        // prune() while find() still saw it.
+        $key = ltrim((string) preg_replace('/\.{2,}/', '.', $key), '.');
+
+        return $this->directory.DIRECTORY_SEPARATOR.($key === '' ? 'server' : $key).'.json';
     }
 
     private function ensureDirectory(): void
