@@ -212,9 +212,7 @@ final class ToxiproxyServer implements Server
             return $this->process->getOutput().$this->process->getErrorOutput();
         }
 
-        $log = $this->processes->defaultLogFile();
-
-        return is_file($log) ? (string) @file_get_contents($log) : '';
+        return $this->processes->readLogs();
     }
 
     public function logFile(): string

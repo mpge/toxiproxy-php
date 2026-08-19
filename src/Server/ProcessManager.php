@@ -127,7 +127,7 @@ final class ProcessManager
         try {
             $this->awaitReadiness(
                 fn (): bool => $this->processes->isAlive($pid),
-                fn (): string => is_file($log) ? (string) @file_get_contents($log) : '',
+                fn (): string => $this->readLogs($log),
                 fn (): ?int => $this->processes->isAlive($pid) ? null : 1,
             );
         } catch (ServerException $e) {
@@ -163,6 +163,33 @@ final class ProcessManager
             'logs',
             sprintf('toxiproxy-%s-%d.log', preg_replace('/[^A-Za-z0-9._-]/', '_', $this->config->host) ?? 'host', $this->config->port),
         ]);
+    }
+
+    /**
+     * Windows cannot redirect stdout and stderr to one file, so a detached
+     * server there writes its errors alongside its log.
+     */
+    public function errorLogFile(): string
+    {
+        return $this->defaultLogFile().'.err';
+    }
+
+    /**
+     * Everything a detached server has written.
+     *
+     * Reads both files: zerolog goes to stdout, but a panic or a failure to
+     * bind goes to stderr, and that is exactly the output worth seeing.
+     */
+    public function readLogs(?string $logFile = null): string
+    {
+        $log = $logFile ?? $this->defaultLogFile();
+
+        $parts = array_filter([
+            is_file($log) ? (string) @file_get_contents($log) : '',
+            is_file($log.'.err') ? (string) @file_get_contents($log.'.err') : '',
+        ], static fn (string $part): bool => trim($part) !== '');
+
+        return implode("\n", $parts);
     }
 
     /**
