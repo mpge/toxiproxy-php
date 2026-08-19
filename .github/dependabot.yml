@@ -1,0 +1,30 @@
+version: 2
+
+updates:
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    groups:
+      # Dev tooling moves often and rarely in isolation; one PR per week keeps
+      # the noise down without hiding anything.
+      dev-tooling:
+        patterns:
+          - phpstan/*
+          - phpunit/phpunit
+          - friendsofphp/php-cs-fixer
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
