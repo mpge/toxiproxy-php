@@ -122,6 +122,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, windows-latest]
+    defaults:
+      run:
+        # Windows would otherwise default to pwsh, which cannot execute the
+        # extensionless Composer bin proxy. Git Bash is present on the runner
+        # and keeps every command here identical across the three platforms.
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -150,6 +156,13 @@ jobs:
 
       - name: Doctor
         run: vendor/bin/toxiproxy-php doctor
+
+      # The .bat wrapper is what a Windows developer's shell actually invokes,
+      # so it gets its own check rather than riding on the bash proxy.
+      - name: The Windows batch wrapper works
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: vendor\bin\toxiproxy-php.bat version
 
       - name: Integration tests
         run: vendor/bin/phpunit --testsuite=integration
