@@ -933,3 +933,7 @@ server binary, that binary remains the property of its authors and is governed b
 upstream's licence, a copy of which ships inside every Toxiproxy release.
 
 If Toxiproxy is useful to you, the credit belongs there.
+
+## Support
+
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&logoColor=000)](https://buymeacoffee.com/mpge)
